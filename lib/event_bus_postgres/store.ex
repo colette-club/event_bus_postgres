@@ -8,7 +8,11 @@ defmodule EventBus.Postgres.Store do
   alias EventBus.Postgres.{Model.Event, Repo}
 
   @pagination_vars %{page: 1, per_page: 20, since: 0}
-  @pagination_vars_with_transaction_id Map.put(@pagination_vars, :transaction_id, nil)
+  @pagination_vars_with_transaction_id Map.put(
+                                         @pagination_vars,
+                                         :transaction_id,
+                                         nil
+                                       )
 
   @doc """
   Fetch all events with pagination
@@ -60,13 +64,20 @@ defmodule EventBus.Postgres.Store do
   @doc """
   Fetch all events with pagination
   """
-  def find_all_by_transaction_id(%{page: page, per_page: per_page, since: since, transaction_id: transaction_id} \\ @pagination_vars_with_transaction_id) do
+  def find_all_by_transaction_id(
+        %{
+          page: page,
+          per_page: per_page,
+          since: since,
+          transaction_id: transaction_id
+        } \\ @pagination_vars_with_transaction_id
+      ) do
     query =
       from(
         e in Event,
         where:
           e.transaction_id == ^transaction_id and
-          e.occurred_at >= ^since,
+            e.occurred_at >= ^since,
         offset: ^((page - 1) * per_page),
         limit: ^per_page
       )

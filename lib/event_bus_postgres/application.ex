@@ -7,10 +7,10 @@ defmodule EventBus.Postgres.Application do
   alias EventBus.Postgres.{Bucket, Config, EventMapper, Queue, Repo}
   alias EventBus.Postgres.Supervisor.TTL, as: TTLSupervisor
 
-  def start(_type, _args) do
+  def start(_type, args) do
     link =
       Supervisor.start_link(
-        workers(),
+        children(args),
         strategy: :one_for_one,
         name: EventBus.Postgres.Supervisor
       )
@@ -22,31 +22,25 @@ defmodule EventBus.Postgres.Application do
     link
   end
 
-  defp workers do
-    import Supervisor.Spec, warn: false
-
+  defp children(_args) do
     [
-      supervisor(Repo, [], id: make_ref(), restart: :permanent),
-      worker(Queue, [], id: make_ref(), restart: :permanent),
-      worker(EventMapper, [], id: make_ref(), restart: :permanent)
+      Repo,
+      Queue,
+      EventMapper
     ] ++ bucket_workers() ++ auto_deletion_workers()
   end
 
   defp auto_deletion_workers do
     if Config.auto_delete_with_ttl?() do
-      import Supervisor.Spec, warn: false
-
-      [supervisor(TTLSupervisor, [], id: make_ref(), restart: :permanent)]
+      [TTLSupervisor]
     else
       []
     end
   end
 
   defp bucket_workers do
-    import Supervisor.Spec, warn: false
-
     Enum.map(1..Config.pool_size(), fn _ ->
-      worker(Bucket, [], id: make_ref(), restart: :permanent)
+      Bucket
     end)
   end
 end

@@ -20,7 +20,7 @@ defmodule EventBus.Postgres.Bucket do
     }
   end
 
-  def start_link do
+  def start_link(_opts) do
     GenStage.start_link(__MODULE__, :ok)
   end
 

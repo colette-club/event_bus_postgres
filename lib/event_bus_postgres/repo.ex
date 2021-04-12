@@ -1,7 +1,9 @@
 defmodule EventBus.Postgres.Repo do
   @moduledoc false
 
-  use Ecto.Repo, otp_app: :event_bus_postgres
+  use Ecto.Repo,
+    otp_app: :event_bus_postgres,
+    adapter: Ecto.Adapters.Postgres
 
   alias EventBus.Postgres.Config
 
@@ -18,7 +20,6 @@ defmodule EventBus.Postgres.Repo do
   defp merge_db_url(opts) do
     case Keyword.has_key?(opts, :url) do
       false -> merge_val(opts, :url, Config.db_url())
-
       true -> opts
     end
   end
@@ -26,7 +27,6 @@ defmodule EventBus.Postgres.Repo do
   defp merge_pool_size(opts) do
     case Keyword.has_key?(opts, :pool_size) do
       false -> merge_val(opts, :pool_size, Config.db_pool_size())
-
       true -> opts
     end
   end

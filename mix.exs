@@ -27,13 +27,12 @@ defmodule EventBus.Postgres.Mixfile do
   defp deps do
     [
       {:event_bus, ">= 1.6.0"},
-      {:ecto, ">= 2.2.10"},
+      {:ecto_sql, "~> 3.5"},
+      {:ecto, "~> 3.5"},
       {:postgrex, ">= 0.0.0"},
       {:gen_stage, "~> 0.14"},
-      {:uuid, "~> 1.1", only: [:dev, :test]},
-      {:ex_doc, ">= 0.0.0", only: :dev},
-      {:credo, "~> 1.4.0", only: :dev},
-      {:dialyxir, "~> 1.0.0-rc.3", only: [:dev], build: false}
+      {:credo, "~> 1.5", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.1", only: [:dev], runtime: false}
     ]
   end
 

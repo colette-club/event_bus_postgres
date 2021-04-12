@@ -6,19 +6,17 @@ defmodule EventBus.Postgres.Supervisor.TTL do
   alias EventBus.Postgres.Worker.TTL, as: TTLWorker
 
   @doc false
-  def start_link do
-    Supervisor.start_link(__MODULE__, [], name: __MODULE__)
+  def start_link(opts) do
+    Supervisor.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
   @doc false
   @spec init(list()) :: no_return()
-  def init([]) do
+  def init(_opts) do
     children = [
-      worker(TTLWorker, [], id: make_ref(), restart: :permanent)
+      TTLWorker
     ]
 
-    opts = [strategy: :one_for_one, name: __MODULE__]
-
-    supervise(children, opts)
+    Supervisor.init(children, strategy: :one_for_one, name: __MODULE__)
   end
 end

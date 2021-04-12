@@ -16,6 +16,7 @@ defmodule EventBus.Postgres.Model.Event do
     field(:source, :string)
     field(:topic, :string)
     field(:transaction_id, Ecto.UUID)
+    field(:aggregate_id, Ecto.UUID)
     field(:ttl, :integer)
   end
 
@@ -24,6 +25,7 @@ defmodule EventBus.Postgres.Model.Event do
     %{
       id: event.id,
       transaction_id: event.transaction_id,
+      aggregate_id: event.data.aggregate_id,
       topic: "#{event.topic}",
       data: :erlang.term_to_binary(event.data),
       initialized_at: event.initialized_at,

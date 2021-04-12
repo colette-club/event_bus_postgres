@@ -5,6 +5,7 @@ defmodule EventBus.Postgres.Repo.Migrations.CreateEvents do
     create table(:events, primary_key: false) do
       add :id, :uuid, primary_key: true
       add :transaction_id, :uuid
+      add :aggregate_id, :uuid
       add :topic, :string
       add :data, :bytea
       add :initialized_at, :bigint
@@ -16,5 +17,6 @@ defmodule EventBus.Postgres.Repo.Migrations.CreateEvents do
     create index(:events, ["occurred_at DESC"])
     create index(:events, [:topic])
     create index(:events, [:transaction_id])
+    create index(:events, [:aggregate_id])
   end
 end
